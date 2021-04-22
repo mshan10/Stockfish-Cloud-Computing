@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import Chessboard from "chessboardjsx";
 import { Typography, Grid } from '@material-ui/core';
 
+// Code taken from https://chessboardjsx.com/integrations/move-validation
+
 const Chess = require('chess.js');
 
 class HumanVsHuman extends Component {
@@ -62,6 +64,7 @@ class HumanVsHuman extends Component {
 
   onDrop = ({ sourceSquare, targetSquare }) => {
     // see if the move is legal
+    console.log("dropped")
     let move = this.game.move({
       from: sourceSquare,
       to: targetSquare,
@@ -122,8 +125,11 @@ class HumanVsHuman extends Component {
     });
 
     // illegal move
-    if (move === null) return;
-    
+    if (move === null) {
+      console.log("illegal")
+      return;
+    }
+    console.log("VALID")
     this.setState({
       fen: this.game.fen(),
       history: this.game.history({ verbose: true }),
