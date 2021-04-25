@@ -4,8 +4,8 @@ from stockfish import Stockfish
 
 stockfish = Stockfish("stockfish_13_linux_x64_bmi2/stockfish_13_linux_x64_bmi2")
 def lambda_handler(event, context):
-    user_id = event['user_id']
-    current_fen = event['fen']
+    user_id = event.body.user_id
+    current_fen = event.body.fen
 
     stockfish.set_elo_rating(os.environ['elo'])
     stockfish.set_fen_position(current_fen)
