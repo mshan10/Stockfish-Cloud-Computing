@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Chessboard from "chessboardjsx";
 import { Typography, Grid } from '@material-ui/core';
+import axios from 'axios'
 
 // Code taken from https://chessboardjsx.com/integrations/move-validation
 
@@ -26,33 +27,33 @@ class HumanVsHuman extends Component {
 
   componentDidMount() {
     this.game = new Chess();
-    
+    this.sendMove = this.sendMove.bind(this)
   }
 
-  // sendMove() {
-  //   url = 'https://reqres.in/api/articles'
-  //   const data = { user_id: 'mshan', fen: this.game.fen() };
-  //   axios.post(url, data).then(response => {
-  //     console.log('resp: ', response)
+  sendMove = () => {
+    let url = 'https://fm8eqe3jtc.execute-api.us-east-2.amazonaws.com/test/stockfishmove'
+    const data = { user_id: 'mshan', fen: this.game.fen() };
+    axios.post(url, data).then(response => {
+      console.log('resp: ', response)
 
-  //     move = response.move
-  //     start = move.substring(0,2)
-  //     end = move.substring(2, 4)
+      let move = response.data.best_move
+      let start = move.substring(0,2)
+      let end = move.substring(2, 4)
 
-  //     this.game.move({
-  //       from: start,
-  //       to: end,
-  //       promotion: "q" // always promote to a queen for example simplicity
-  //     });
+      this.game.move({
+        from: start,
+        to: end,
+        promotion: "q" // always promote to a queen for example simplicity
+      });
 
-  //     this.setState(({ history, pieceSquare }) => ({
-  //       fen: this.game.fen(),
-  //       history: this.game.history({ verbose: true }),
-  //       squareStyles: squareStyling({ pieceSquare, history })
-  //     }));
+      this.setState(({ history, pieceSquare }) => ({
+        fen: this.game.fen(),
+        history: this.game.history({ verbose: true }),
+        squareStyles: squareStyling({ pieceSquare, history })
+      }));
 
-  //   });
-  // }
+    });
+  }
 
   // keep clicked square style and remove hint squares
   removeHighlightSquare = () => {
@@ -104,6 +105,7 @@ class HumanVsHuman extends Component {
       history: this.game.history({ verbose: true }),
       squareStyles: squareStyling({ pieceSquare, history })
     }));
+    this.sendMove()
   };
 
   onMouseOverSquare = square => {
@@ -161,11 +163,12 @@ class HumanVsHuman extends Component {
       history: this.game.history({ verbose: true }),
       pieceSquare: ""
     });
+    this.sendMove()
   };
 
   render() {
     const { fen, dropSquareStyle, squareStyles } = this.state;
-
+    
     return this.props.children({
       squareStyles,
       position: fen,
