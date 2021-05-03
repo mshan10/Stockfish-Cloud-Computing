@@ -9,6 +9,7 @@ def lambda_handler(event, context):
     
 
     stockfish.set_elo_rating(os.environ['elo'])
+    stockfish.set_depth(os.environ['depth'])
     stockfish.set_fen_position(current_fen)
 
     best_move = stockfish.get_best_move()
